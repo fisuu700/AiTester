@@ -1,27 +1,31 @@
-# fly.toml app configuration file generated for ai-tester-backend
-app = "aitester-backend"
-primary_region = "cdg"
+# fly.toml app configuration file generated for aitester-jgnla on 2026-11-13T18:54:35Z
+#
+# See https://docs.fly.io/reference/configuration for information about how to use this file.
+#
+
+app = 'aitester-jgnla'
+primary_region = 'cdg'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
 [env]
-  PORT = "8000"
-  DATABASE_URL = "sqlite:////app/data/platform.db"
-  ALLOW_PRIVATE_TARGETS = "false"
-  MAX_CONCURRENT_SCANS = "2"
-  AGENT_TIMEOUT_SECONDS = "300"
+  AGENT_TIMEOUT_SECONDS = '300'
+  ALLOW_PRIVATE_TARGETS = 'false'
+  DATABASE_URL = 'sqlite:////app/data/platform.db'
+  MAX_CONCURRENT_SCANS = '2'
+  PORT = '8000'
 
 [http_service]
   internal_port = 8000
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 1
-  processes = ["app"]
+  processes = ['app']
 
 [[vm]]
-  memory = "2048mb"
-  cpu_kind = "shared"
+  memory = '2048mb'
+  cpu_kind = 'shared'
   cpus = 2
-
+  memory_mb = 2048
