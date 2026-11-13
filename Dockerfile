@@ -1,11 +1,11 @@
-# Dockerfile à la racine pour déploiement Fly.io / conteneurs
-FROM python:3.13-slim
+# Image officielle Playwright basée sur Ubuntu (contient Node.js, Python et tous les prérequis Chromium)
+FROM mcr.microsoft.com/playwright/python:v1.50.0-noble
 
 WORKDIR /app
 
-# Installation des dépendances Python et Playwright avec Chromium
+# Installation des dépendances Python du projet
 COPY backend/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt && python -m playwright install --with-deps chromium
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copie du code backend
 COPY backend/app ./app

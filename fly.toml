@@ -24,3 +24,4 @@ primary_region = "cdg"
   memory = "2048mb"
   cpu_kind = "shared"
   cpus = 2
+
