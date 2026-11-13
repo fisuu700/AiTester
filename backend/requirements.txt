@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+playwright
+beautifulsoup4
+ollama
+sqlalchemy
+psycopg[binary]
+python-dotenv
+websockets
+httpx
+PyJWT
+bcrypt
+apscheduler

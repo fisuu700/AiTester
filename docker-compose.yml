@@ -1,0 +1,78 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: e2e-agent-backend
+    ports:
+      - "8000:8000"
+    environment:
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_TIMEOUT: ${OLLAMA_TIMEOUT:-120}
+      MODEL_PLANNER: ${MODEL_PLANNER:-llama3.1:8b}
+      MODEL_EXECUTOR: ${MODEL_EXECUTOR:-qwen2.5-coder:7b}
+      MODEL_ANALYST: ${MODEL_ANALYST:-deepseek-r1:7b}
+      BROWSER_HEADLESS: ${BROWSER_HEADLESS:-true}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////app/data/platform.db}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-please-use-a-long-random-secret}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      JWT_EXPIRE_MINUTES: ${JWT_EXPIRE_MINUTES:-10080}
+
+      ALLOW_PRIVATE_TARGETS: ${ALLOW_PRIVATE_TARGETS:-false}
+      MAX_PAGES_PER_SCAN: ${MAX_PAGES_PER_SCAN:-20}
+      MAX_LINKS_CHECKED: ${MAX_LINKS_CHECKED:-40}
+      AGENT_TIMEOUT_SECONDS: ${AGENT_TIMEOUT_SECONDS:-300}
+      MAX_CONCURRENT_SCANS: ${MAX_CONCURRENT_SCANS:-3}
+      SCORE_WEIGHTS: ${SCORE_WEIGHTS:-reliability=0.30,security=0.35,performance=0.20,accessibility=0.15}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - backend-data:/app/data
+      - backend-reports:/app/reports
+    restart: unless-stopped
+
+  frontend:
+    image: node:24-alpine
+    container_name: e2e-agent-frontend
+    working_dir: /app
+    command: sh -c "npm install --no-audit --no-fund && npm run dev"
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Décommentez pour un déploiement Postgres au lieu de SQLite.
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: e2e-agent-postgres
+  #   environment:
+  #     POSTGRES_USER: aitester
+  #     POSTGRES_PASSWORD: aitester
+  #     POSTGRES_DB: aitester
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   # Et côté backend : DATABASE_URL=postgresql+psycopg://aitester:aitester@postgres:5432/aitester
+
+volumes:
+  backend-data:
+  backend-reports:
+  # postgres-data:
+
+# Ollama tourne en local sur la machine hôte (mode 100% on-premise).
+# Pour un déploiement conteneurisé complet, décommentez :
+#  ollama:
+#    image: ollama/ollama:latest
+#    ports:
+#      - "11434:11434"
+#    volumes:
+#      - ollama-models:/root/.ollama
+# volumes:
+#   ollama-models:
