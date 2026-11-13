@@ -11,6 +11,7 @@ primary_region = "cdg"
   ALLOW_PRIVATE_TARGETS = "false"
   MAX_CONCURRENT_SCANS = "2"
   AGENT_TIMEOUT_SECONDS = "300"
+  CORS_ORIGINS = "https://frontend-eight-ochre-0bya5pf2rk.vercel.app,http://localhost:3000"
 
 [http_service]
   internal_port = 8000
